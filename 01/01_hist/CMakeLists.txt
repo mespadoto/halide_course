@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
-SET (CMAKE_CXX_COMPILER "/usr/bin/clang++-15" CACHE STRING "C++ compiler" FORCE)
+project(example)
 
-project(lesson_02)
-
-set(CMAKE_PREFIX_PATH /tmp/Halide-16.0.0-x86-64-linux/lib/cmake)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_PREFIX_PATH /scratch/Halide-16.0.0-x86-64-linux/lib/cmake)
 
-include_directories(/tmp/Halide-16.0.0-x86-64-linux/share/Halide/tools)
+include_directories(/scratch/Halide-16.0.0-x86-64-linux/share/Halide/tools)
 
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)

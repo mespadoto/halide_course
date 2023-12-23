@@ -1,17 +1,22 @@
 cmake_minimum_required(VERSION 3.16)
 
-SET (CMAKE_CXX_COMPILER "/usr/bin/clang++-15" CACHE STRING "C++ compiler" FORCE)
+project(example)
 
-project(blur)
-
-set(CMAKE_PREFIX_PATH /tmp/Halide-16.0.0-x86-64-linux/lib/cmake)
+set(CMAKE_PREFIX_PATH /scratch/Halide-16.0.0-x86-64-linux/lib/cmake)
 set(CMAKE_CXX_STANDARD 17)
 
-set(OpenMP_CXX_FLAGS "-fopenmp=libomp")
+cmake_host_system_information(RESULT _host_name QUERY HOSTNAME)
+
+if (_host_name MATCHES "m1")
+    set(OpenMP_CXX_FLAGS "-fopenmp-simd")
+else()
+    set(OpenMP_CXX_FLAGS "-fopenmp=libomp")
+endif()
+
 set(OpenMP_CXX_LIB_NAMES "libomp")
 set(OpenMP_libomp_LIBRARY "/usr/lib/llvm-14/lib/libomp.so")
 
-include_directories(/tmp/Halide-16.0.0-x86-64-linux/share/Halide/tools)
+include_directories(/scratch/Halide-16.0.0-x86-64-linux/share/Halide/tools)
 
 find_package(OpenMP REQUIRED)
 find_package(PNG REQUIRED)
