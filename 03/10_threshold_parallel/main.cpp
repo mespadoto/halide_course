@@ -48,13 +48,13 @@ Halide::Func get_parallel_func(Halide::Buffer<uint8_t>& input, float threshold) 
   proc(x, y, c) = thresholded;
 
   Halide::Var x_outer, y_outer, x_inner, y_inner, tile_index;
-  proc.tile(x, y, x_outer, y_outer, x_inner, y_inner, 64, 64)
+  proc.tile(x, y, x_outer, y_outer, x_inner, y_inner, 1024, 1024)
       .fuse(x_outer, y_outer, tile_index)
       .parallel(tile_index);
 
   Halide::Var x_inner_outer, y_inner_outer, x_vectors, y_pairs;
 
-  proc.tile(x_inner, y_inner, x_inner_outer, y_inner_outer, x_vectors, y_pairs, 4, 2)
+  proc.tile(x_inner, y_inner, x_inner_outer, y_inner_outer, x_vectors, y_pairs, 8, 4)
       .vectorize(x_vectors)
       .unroll(y_pairs);
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
     threshold = atof(argv[1]);
   }
   
-  Halide::Buffer<uint8_t> input = Halide::Tools::load_image("bird_large.jpg");
+  Halide::Buffer<uint8_t> input = Halide::Tools::load_image("../bird_large.jpg");
 
   Halide::Func proc_basic = get_basic_func(input, threshold);
   Halide::Func proc_parallel = get_parallel_func(input, threshold);
@@ -79,11 +79,6 @@ int main(int argc, char **argv) {
 
     Halide::Buffer<uint8_t> output_basic(input.width(), input.height());
     Halide::Buffer<uint8_t> output_parallel(input.width(), input.height());
-
-    // Halide::Buffer<uint8_t> output_basic = proc.realize(
-    //   {input.width(), input.height(), input.channels()});
-    // Halide::Buffer<uint8_t> output_parallel = proc.realize(
-    //   {input.width(), input.height(), input.channels()});
 
     duration<double, std::milli> duration_basic = run_func(input, output_basic, proc_basic);
     duration<double, std::milli> duration_parallel = run_func(input, output_parallel, proc_parallel);
