@@ -44,13 +44,3 @@ int main(int argc, char **argv) {
 
   return 0;
 }
-
-
-//   //Halide::Expr uint_px = print(Halide::cast<uint8_t>(convert_gray * 255), "x: ", x, "y: ", y, " = ", convert_gray);
-//   //Halide::Expr uint_px = print_when(convert_gray == 0.0f, Halide::cast<uint8_t>(convert_gray * 255), "x: ", x, "y: ", y, " = ", convert_gray);
-
-//   // proc.trace_loads();
-//   // proc.trace_realizations();
-//   //proc.trace_stores();
-
-// //  proc.compile_to_lowered_stmt("proc.stmt.html", {}, Halide::HTML);

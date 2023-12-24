@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-
-
 project(example)
 
 set(CMAKE_PREFIX_PATH /scratch/Halide-16.0.0-x86-64-linux/lib/cmake)
