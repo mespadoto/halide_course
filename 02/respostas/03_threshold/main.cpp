@@ -6,17 +6,30 @@ using namespace Halide::Tools;
 
 int main(int argc, char **argv) {
   float threshold = 0.5f;
+
+  if (argc == 2) {
+    threshold = atof(argv[1]);
+  }
   
   Halide::Buffer<uint8_t> input = Halide::Tools::load_image("bird.jpg");
 
   Halide::Func proc;
   Halide::Var x, y, c;
-
-  //TODO: calcular o threshold
-  //proc(x, y, c) = xxxxxx;
+  Halide::Func float_px;
+  
+  float_px(x, y, c) = Halide::cast<float>(input(x, y, c) / 255.0f);
+  Halide::Expr gray = 0.299f * float_px(x, y, 0) + 
+                      0.587f * float_px(x, y, 1) + 
+                      0.114f * float_px(x, y, 2);
+  
+  Halide::Expr thresholded = Halide::cast<uint8_t>(gray > threshold) * 255;
+  
+  proc(x, y, c) = thresholded;
 
   try {
-    Halide::Buffer<uint8_t> output = proc.realize({input.width(), input.height(), input.channels()});
+    Halide::Buffer<uint8_t> output = proc.realize(
+      {input.width(), input.height(), input.channels()});
+
     Halide::Tools::save_image(output, "bird_binary.png");
   }
   catch (Halide::CompileError& e){

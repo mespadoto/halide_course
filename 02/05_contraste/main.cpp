@@ -5,29 +5,16 @@
 using namespace Halide::Tools;
 
 int main(int argc, char **argv) {
-  float sharpness = 2.0f;
-
-  if (argc == 2) {
-    sharpness = atof(argv[1]);
-  }
-  
   Halide::Buffer<uint8_t> input = Halide::Tools::load_image("bird.jpg");
 
   Halide::Func proc, float_px;
   Halide::Var x, y, c;
 
-  float_px(x, y, c) = Halide::cast<float>(input(x, y, c) / 255.0f);
-
-  Halide::Expr sharper = float_px(x, y, c) * sharpness;
-  Halide::Expr clamp_min_max = Halide::max(Halide::min(sharper, 1), 0);
-  Halide::Expr uint_px = Halide::cast<uint8_t>(clamp_min_max * 255);
-
-  proc(x, y, c) = uint_px;
+  //TODO: implementar
+  //proc(x, y, c) = xxx;
 
   try {
-    Halide::Buffer<uint8_t> output = proc.realize(
-      {input.width(), input.height(), input.channels()});
-
+    Halide::Buffer<uint8_t> output = proc.realize({input.width(), input.height(), input.channels()});
     Halide::Tools::save_image(output, "bird_sharper.png");
   }
   catch (Halide::CompileError& e){
